@@ -88,7 +88,7 @@ services:
       context: .
     command: python -u /app/app.py
     ports:
-      - "8000:8000"
+      - "8002:8000"
     networks:
       eth-model-local:
         aliases:
@@ -148,7 +148,7 @@ services:
           --boot-nodes=/ip4/172.22.0.100/tcp/9010/p2p/$data \
           --topic=1 \
           --allora-chain-key-name=testkey \
-          --allora-chain-restore-mnemonic='{$SEED}' \
+          --allora-chain-restore-mnemonic='$SEED' \
           --allora-node-rpc-address=https://allora-rpc.edgenet.allora.network/ \
           --allora-chain-topic-id=1
     volumes:
