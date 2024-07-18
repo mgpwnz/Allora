@@ -77,10 +77,25 @@ rm -rf docker-compose.yml
 read -p "Enter wallet seed: " SEED
 echo 'export SEED='${SEED}
 sleep 1
+
+read_with_default() {
+    local prompt="Enter Topic ID defaut=1"
+    local default_value=1
+    local input
+
+    read -p "$prompt [$default_value]: " input
+    if [ -z "$input" ]; then
+        input=$default_value
+    fi
+}
+
+
+
+
+
 data=$(<head-data/keys/identity)
 tee $HOME/basic-coin-prediction-node/docker-compose.yml > /dev/null <<EOF
 version: '3'
-
 services:
   inference:
     container_name: inference-basic-eth-pred
@@ -88,7 +103,7 @@ services:
       context: .
     command: python -u /app/app.py
     ports:
-      - "8002:8000"
+      - "8000:8000"
     networks:
       eth-model-local:
         aliases:
@@ -97,7 +112,7 @@ services:
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8000/inference/ETH"]
       interval: 10s
-      timeout: 5s
+      timeout: 10s
       retries: 12
     volumes:
       - ./inference-data:/app/data
@@ -141,16 +156,14 @@ services:
           cd /data/keys
           allora-keys
         fi
-        # Change boot-nodes below to the key advertised by your head
         allora-node --role=worker --peer-db=/data/peerdb --function-db=/data/function-db \
           --runtime-path=/app/runtime --runtime-cli=bls-runtime --workspace=/data/workspace \
           --private-key=/data/keys/priv.bin --log-level=debug --port=9011 \
           --boot-nodes=/ip4/172.22.0.100/tcp/9010/p2p/$data \
-          --topic=1 \
           --allora-chain-key-name=testkey \
           --allora-chain-restore-mnemonic='$SEED' \
-          --allora-node-rpc-address=https://allora-rpc.edgenet.allora.network/ \
-          --allora-chain-topic-id=1
+          --allora-node-rpc-address=https://allora-rpc.testnet-1.testnet.allora.network \
+          --topic=allora-topic-$input-worker --allora-chain-worker-mode=worker
     volumes:
       - ./worker-data:/data
     working_dir: /data
@@ -192,7 +205,6 @@ services:
           - head
         ipv4_address: 172.22.0.100
 
-
 networks:
   eth-model-local:
     driver: bridge
@@ -224,7 +236,7 @@ read -r -p "Wipe all DATA? [y/N] " response
 case "$response" in
     [yY][eE][sS]|[yY]) 
 cd $HOME/basic-coin-prediction-node && docker compose down -v
-rm -rf $HOME/basic-coin-prediction-node
+rm -rf $HOME/basic-coin-prediction-node $HOME/allora-chain
         ;;
     *)
 	echo Canceled
