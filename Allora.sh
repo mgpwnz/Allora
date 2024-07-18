@@ -77,27 +77,7 @@ rm -rf docker-compose.yml
 read -p "Enter wallet seed: " SEED
 echo 'export SEED='${SEED}
 sleep 1
-
-read_with_default() {
-    local prompt=Enter topic ID
-    local default_value=1
-    local input
-
-    read -p "$prompt [$default_value]: " input
-    if [ -z "$input" ]; then
-        input=$default_value
-    fi
-    echo $input
-}
-
-# Використання функції
-topic_id=$(read_with_default "Enter Topic ID" 1)
-echo "Selected Topic ID: $topic_id"
-
-
-
-
-
+topic_id=1
 data=$(<head-data/keys/identity)
 tee $HOME/basic-coin-prediction-node/docker-compose.yml > /dev/null <<EOF
 version: '3'
@@ -108,7 +88,7 @@ services:
       context: .
     command: python -u /app/app.py
     ports:
-      - "8000:8000"
+      - "8002:8000"
     networks:
       eth-model-local:
         aliases:
