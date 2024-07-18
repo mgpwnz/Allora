@@ -79,7 +79,7 @@ echo 'export SEED='${SEED}
 sleep 1
 
 read_with_default() {
-    local prompt="Enter Topic ID defaut=1"
+    local prompt=Enter topic ID
     local default_value=1
     local input
 
@@ -87,7 +87,12 @@ read_with_default() {
     if [ -z "$input" ]; then
         input=$default_value
     fi
+    echo $input
 }
+
+# Використання функції
+topic_id=$(read_with_default "Enter Topic ID" 1)
+echo "Selected Topic ID: $topic_id"
 
 
 
@@ -163,7 +168,7 @@ services:
           --allora-chain-key-name=testkey \
           --allora-chain-restore-mnemonic='$SEED' \
           --allora-node-rpc-address=https://allora-rpc.testnet-1.testnet.allora.network \
-          --topic=allora-topic-$input-worker --allora-chain-worker-mode=worker
+          --topic=allora-topic-$topic_id-worker --allora-chain-worker-mode=worker
     volumes:
       - ./worker-data:/data
     working_dir: /data
