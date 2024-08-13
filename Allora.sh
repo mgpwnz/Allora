@@ -67,13 +67,19 @@ cd basic-coin-prediction-node
 cp config.example.json config.json
 #create new conf
 read -p "Enter wallet seed: " SEED
-echo 'export SEED='${SEED}
-#change config
-mkdir data
-sed -i -e "s%"addressRestoreMnemonic": "",%"addressRestoreMnemonic": "${SEED}",%g" $HOME/basic-coin-prediction-node/config.json
-sed -i -e "s%"nodeRpc": "http://localhost:26657",%"nodeRpc": "https://allora-rpc.testnet-1.testnet.allora.network",%g" $HOME/basic-coin-prediction-node/config.json
-sed -i -e "s%"alloraHomeDir": "",%"alloraHomeDir": "data",%g" $HOME/basic-coin-prediction-node/config.json
-sleep 2
+
+# Export seed as an environment variable
+export SEED="${SEED}"
+echo "Wallet seed exported."
+
+# Create the data directory if it doesn't exist
+mkdir -p $HOME/basic-coin-prediction-node/data
+
+# Update config.json with the provided seed and other parameters
+CONFIG_FILE="$HOME/basic-coin-prediction-node/config.json"
+sed -i -e "s%\"addressRestoreMnemonic\": \"\"%\"addressRestoreMnemonic\": \"${SEED}\"%g" $CONFIG_FILE
+sed -i -e "s%\"nodeRpc\": \"http://localhost:26657\"%\"nodeRpc\": \"https://allora-rpc.testnet-1.testnet.allora.network\"%g" $CONFIG_FILE
+sed -i -e "s%\"alloraHomeDir\": \"\"%\"alloraHomeDir\": \"data\"%g" $CONFIG_FILE
 chmod +x init.config
 ./init.config
 sleep 2
