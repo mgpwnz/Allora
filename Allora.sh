@@ -146,9 +146,10 @@ sed -i -e 's%"worker": \[\([^]]*\)\]%"worker": \[\1, \
 #change timeout
 TIMEOUT="$HOME/basic-coin-prediction-node/model.py"
 sed -i -e "s%intervals = \[\"1d\"\]%intervals = \[\"10m\", \"20m\", \"1h\", \"1d\"\]%g" $TIMEOUT
-
+cd $HOME/basic-coin-prediction-node/
 chmod +x init.config
 ./init.config
+cd $HOME
 docker compose -f $HOME/basic-coin-prediction-node/docker-compose.yml up -d
 sleep 1
 docker logs -f worker
