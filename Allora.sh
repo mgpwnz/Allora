@@ -78,7 +78,7 @@ mkdir -p $HOME/basic-coin-prediction-node/data
 # Update config.json with the provided seed and other parameters
 CONFIG_FILE="$HOME/basic-coin-prediction-node/config.json"
 sed -i -e "s%\"addressRestoreMnemonic\": \"\"%\"addressRestoreMnemonic\": \"${SEED}\"%g" $CONFIG_FILE
-sed -i -e "s%\"nodeRpc\": \"http://localhost:26657\"%\"nodeRpc\": \" https://sentries-rpc.testnet-1.testnet.allora.network\"%g" $CONFIG_FILE
+sed -i -e "s%\"nodeRpc\": \"http://localhost:26657\"%\"nodeRpc\": \"https://allora-rpc.testnet-1.testnet.allora.network\"%g" $CONFIG_FILE
 sed -i -e "s%\"alloraHomeDir\": \"\"%\"alloraHomeDir\": \"data\"%g" $CONFIG_FILE
 chmod +x init.config
 ./init.config
