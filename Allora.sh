@@ -5,7 +5,7 @@ do
 # Menu
 
 PS3='Select an action: '
-options=("Pre Install" "Install wallet" "Install worker" "Logs" "Uninstall" "Exit")
+options=("Pre Install" "Install wallet" "Install worker" "Re-run node" "Logs" "Uninstall" "Exit")
 select opt in "${options[@]}"
                do
                    case $opt in                          
@@ -86,7 +86,10 @@ sleep 2
 docker compose up -d
 break
 ;;
-
+"Re-run node")
+docker compose -f $HOME/basic-coin-prediction-node/docker-compose.yml up -d
+break
+;;
 "Logs")
 docker logs -f worker
 break
