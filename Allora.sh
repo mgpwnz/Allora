@@ -5,7 +5,7 @@ do
 # Menu
 
 PS3='Select an action: '
-options=("Pre Install" "Install wallet" "Install worker" "Re-run node" "Logs" "Uninstall" "Exit")
+options=("Pre Install" "Install wallet" "Install worker" "Re-run node" "Logs" "Update" "Uninstall" "Exit")
 select opt in "${options[@]}"
                do
                    case $opt in                          
@@ -119,7 +119,41 @@ break
 docker logs -f worker
 break
 ;;
+"Update")
+docker compose -f $HOME/basic-coin-prediction-node/docker-compose.yml down -v
+CONFIG_FILE="$HOME/basic-coin-prediction-node/config.json"
+sed -i -e "s%\"addressKeyName\": \"test\"%\"addressKeyName\": \"testkey\"%g" $CONFIG_FILE
+# Update the worker block
+sed -i -e 's%"worker": \[\([^]]*\)\]%"worker": \[\1, \
+        { \
+            "topicId": 2, \
+            "inferenceEntrypointName": "api-worker-reputer", \
+            "loopSeconds": 5, \
+            "parameters": { \
+                "InferenceEndpoint": "http://inference:8000/inference/{Token}", \
+                "Token": "ETH" \
+            } \
+        }, \
+        { \
+            "topicId": 7, \
+            "inferenceEntrypointName": "api-worker-reputer", \
+            "loopSeconds": 5, \
+            "parameters": { \
+                "InferenceEndpoint": "http://inference:8000/inference/{Token}", \
+                "Token": "ETH" \
+            } \
+        } ]%' $CONFIG_FILE
+#change timeout
+TIMEOUT="$HOME/basic-coin-prediction-node/model.py"
+sed -i -e "s%intervals = \[\"1d\"\]%intervals = \[\"10m\", \"20m\", \"1h\", \"1d\"\]%g" $TIMEOUT
 
+chmod +x init.config
+./init.config
+docker compose -f $HOME/basic-coin-prediction-node/docker-compose.yml up -d
+sleep 1
+docker logs -f worker
+break
+;;
 "Uninstall")
 if [ ! -d "$HOME/basic-coin-prediction-node" ]; then
     break
