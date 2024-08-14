@@ -17,7 +17,7 @@ touch $HOME/.bash_profile
 	if ! docker --version; then
 		sudo apt update
 		sudo apt upgrade -y
-		sudo apt install curl apt-transport-https ca-certificates gnupg lsb-release -y
+		sudo apt install curl jq apt-transport-https ca-certificates gnupg lsb-release -y
 		. /etc/*-release
 		wget -qO- "https://download.docker.com/linux/${DISTRIB_ID,,}/gpg" | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
 		echo "deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/${DISTRIB_ID,,} ${DISTRIB_CODENAME} stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
@@ -80,6 +80,7 @@ CONFIG_FILE="$HOME/basic-coin-prediction-node/config.json"
 sed -i -e "s%\"addressRestoreMnemonic\": \"\"%\"addressRestoreMnemonic\": \"${SEED}\"%g" $CONFIG_FILE
 sed -i -e "s%\"nodeRpc\": \"http://localhost:26657\"%\"nodeRpc\": \"https://allora-rpc.testnet-1.testnet.allora.network\"%g" $CONFIG_FILE
 sed -i -e "s%\"alloraHomeDir\": \"\"%\"alloraHomeDir\": \"data\"%g" $CONFIG_FILE
+sed -i -e "s%\"addressKeyName\": \"test\"%\"addressKeyName\": \"testkey\"%g" $CONFIG_FILE
 chmod +x init.config
 ./init.config
 sleep 2
