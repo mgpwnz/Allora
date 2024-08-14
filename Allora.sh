@@ -82,25 +82,36 @@ sed -i -e "s%\"nodeRpc\": \"http://localhost:26657\"%\"nodeRpc\": \"https://allo
 sed -i -e "s%\"alloraHomeDir\": \"\"%\"alloraHomeDir\": \"data\"%g" $CONFIG_FILE
 sed -i -e "s%\"addressKeyName\": \"test\"%\"addressKeyName\": \"testkey\"%g" $CONFIG_FILE
 # Update the worker block
-sed -i -e 's%"worker": \[\([^]]*\)\]%"worker": \[\1, \
-        { \
-            "topicId": 2, \
-            "inferenceEntrypointName": "api-worker-reputer", \
-            "loopSeconds": 5, \
-            "parameters": { \
-                "InferenceEndpoint": "http://inference:8000/inference/{Token}", \
-                "Token": "ETH" \
-            } \
-        }, \
-        { \
-            "topicId": 7, \
-            "inferenceEntrypointName": "api-worker-reputer", \
-            "loopSeconds": 5, \
-            "parameters": { \
-                "InferenceEndpoint": "http://inference:8000/inference/{Token}", \
-                "Token": "ETH" \
-            } \
-        } ]%' $CONFIG_FILE
+sed -i '/"worker": \[/,/\]/c\
+    "worker": [\
+        {\
+            "topicId": 1,\
+            "inferenceEntrypointName": "api-worker-reputer",\
+            "loopSeconds": 5,\
+            "parameters": {\
+                "InferenceEndpoint": "http://inference:8000/inference/{Token}",\
+                "Token": "ETH"\
+            }\
+        },\
+        {\
+            "topicId": 2,\
+            "inferenceEntrypointName": "api-worker-reputer",\
+            "loopSeconds": 5,\
+            "parameters": {\
+                "InferenceEndpoint": "http://inference:8000/inference/{Token}",\
+                "Token": "ETH"\
+            }\
+        },\
+        {\
+            "topicId": 7,\
+            "inferenceEntrypointName": "api-worker-reputer",\
+            "loopSeconds": 5,\
+            "parameters": {\
+                "InferenceEndpoint": "http://inference:8000/inference/{Token}",\
+                "Token": "ETH"\
+            }\
+        }\
+    ]' $CONFIG_FILE
 #change timeout
 TIMEOUT="$HOME/basic-coin-prediction-node/model.py"
 sed -i -e "s%intervals = \[\"1d\"\]%intervals = \[\"10m\", \"20m\", \"1h\", \"1d\"\]%g" $TIMEOUT
@@ -124,25 +135,36 @@ docker compose -f $HOME/basic-coin-prediction-node/docker-compose.yml down -v
 CONFIG_FILE="$HOME/basic-coin-prediction-node/config.json"
 sed -i -e "s%\"addressKeyName\": \"test\"%\"addressKeyName\": \"testkey\"%g" $CONFIG_FILE
 # Update the worker block
-sed -i -e 's%"worker": \[\([^]]*\)\]%"worker": \[\1, \
-        { \
-            "topicId": 2, \
-            "inferenceEntrypointName": "api-worker-reputer", \
-            "loopSeconds": 5, \
-            "parameters": { \
-                "InferenceEndpoint": "http://inference:8000/inference/{Token}", \
-                "Token": "ETH" \
-            } \
-        }, \
-        { \
-            "topicId": 7, \
-            "inferenceEntrypointName": "api-worker-reputer", \
-            "loopSeconds": 5, \
-            "parameters": { \
-                "InferenceEndpoint": "http://inference:8000/inference/{Token}", \
-                "Token": "ETH" \
-            } \
-        } ]%' $CONFIG_FILE
+sed -i '/"worker": \[/,/\]/c\
+    "worker": [\
+        {\
+            "topicId": 1,\
+            "inferenceEntrypointName": "api-worker-reputer",\
+            "loopSeconds": 5,\
+            "parameters": {\
+                "InferenceEndpoint": "http://inference:8000/inference/{Token}",\
+                "Token": "ETH"\
+            }\
+        },\
+        {\
+            "topicId": 2,\
+            "inferenceEntrypointName": "api-worker-reputer",\
+            "loopSeconds": 5,\
+            "parameters": {\
+                "InferenceEndpoint": "http://inference:8000/inference/{Token}",\
+                "Token": "ETH"\
+            }\
+        },\
+        {\
+            "topicId": 7,\
+            "inferenceEntrypointName": "api-worker-reputer",\
+            "loopSeconds": 5,\
+            "parameters": {\
+                "InferenceEndpoint": "http://inference:8000/inference/{Token}",\
+                "Token": "ETH"\
+            }\
+        }\
+    ]' $CONFIG_FILE
 #change timeout
 TIMEOUT="$HOME/basic-coin-prediction-node/model.py"
 sed -i -e "s%intervals = \[\"1d\"\]%intervals = \[\"10m\", \"20m\", \"1h\", \"1d\"\]%g" $TIMEOUT
