@@ -36,6 +36,7 @@ touch $HOME/.bash_profile
 		. $HOME/.bash_profile
 	fi
 #python
+sudo apt install jq -y
 sudo apt install python3
 python3 --version
 sudo apt install python3-pip
