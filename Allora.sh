@@ -5,7 +5,7 @@ do
 # Menu
 
 PS3='Select an action: '
-options=("Pre Install" "Install wallet" "Install worker" "Re-run node" "Logs" "ver2" "Uninstall" "Exit")
+options=("Pre Install" "Install wallet" "Install worker" "Re-run node" "Logs" "Version 2" "Uninstall" "Exit")
 #options=("Pre Install" "Install wallet" "Install worker" "Re-run node" "Logs" "Update" "Uninstall" "Exit")
 select opt in "${options[@]}"
                do
@@ -63,6 +63,9 @@ allorad keys add testkey --recover
 break
 ;;
 "Install worker")
+if [  -d "$HOME/allora-huggingface-walkthrough" ]; then
+docker compose -f $HOME/allora-huggingface-walkthrough/docker-compose.yml down -v
+fi
 cd $HOME && git clone https://github.com/allora-network/basic-coin-prediction-node
 cd basic-coin-prediction-node
 #Copy the example configuration file and populate it with your variables:
@@ -176,13 +179,15 @@ sleep 1
 docker logs -f worker
 break
 ;;
-"ver2")
-read -r -p "Remove ver.1? [y/N] " response
+"Version 2")
+read -r -p "Install ver 2? [y/N] " response
 case "$response" in
     [yY][eE][sS]|[yY]) 
 #rem old config
+if [  -d "$HOME/basic-coin-prediction-node" ]; then
 docker compose -f $HOME/basic-coin-prediction-node/docker-compose.yml down -v
 docker container prune
+fi
 #new config
 cd $HOME
 git clone https://github.com/allora-network/allora-huggingface-walkthrough
