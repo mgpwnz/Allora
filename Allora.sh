@@ -206,7 +206,7 @@ echo "Wallet seed exported."
 CONFIG_FILE="$HOME/allora-huggingface-walkthrough/config.json"
 sed -i -e "s%\"addressRestoreMnemonic\": \"\"%\"addressRestoreMnemonic\": \"${SEED}\"%g" $CONFIG_FILE
 sed -i -e "s%\"alloraHomeDir\": \"\"%\"alloraHomeDir\": \"/root/.allorad\"%g" $CONFIG_FILE
-sed -i -e "s%\"nodeRpc\": \"http://localhost:26657\"%\"nodeRpc\": \"https://allora-rpc.testnet-1.testnet.allora.network\"%g" $CONFIG_FILE
+sed -i -e "s%\"nodeRpc\": \"http://localhost:26657\"%\"nodeRpc\": \"https://allora-testnet-rpc.polkachu.com\"%g" $CONFIG_FILE
 sed -i -e "s%\"addressKeyName\": \"test\"%\"addressKeyName\": \"testkey\"%g" $CONFIG_FILE
 # Update the worker block
 sed -i '/"worker": \[/,/\]/c\
