@@ -301,8 +301,8 @@ sed -i -e "s%<Your Coingecko API key>%${key}%g" $HOME/allora-huggingface-walkthr
 #init
 chmod +x init.config
 ./init.config
+docker compose up --build -d
 cd $HOME
-docker compose -f $HOME/allora-huggingface-walkthrough/docker-compose.yml up --build -d
         ;;
     *)
 	echo Canceled
