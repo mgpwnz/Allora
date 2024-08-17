@@ -74,14 +74,11 @@ read -p "Enter wallet seed: " SEED
 export SEED="${SEED}"
 echo "Wallet seed exported."
 
-# Create the data directory if it doesn't exist
-mkdir -p $HOME/basic-coin-prediction-node/data
-
 # Update config.json with the provided seed and other parameters
 CONFIG_FILE="$HOME/basic-coin-prediction-node/config.json"
 sed -i -e "s%\"addressRestoreMnemonic\": \"\"%\"addressRestoreMnemonic\": \"${SEED}\"%g" $CONFIG_FILE
 sed -i -e "s%\"nodeRpc\": \"http://localhost:26657\"%\"nodeRpc\": \"https://allora-rpc.testnet-1.testnet.allora.network\"%g" $CONFIG_FILE
-sed -i -e "s%\"alloraHomeDir\": \"\"%\"alloraHomeDir\": \"data\"%g" $CONFIG_FILE
+sed -i -e "s%\"alloraHomeDir\": \"\"%\"alloraHomeDir\": \"/root/.allorad\"%g" $CONFIG_FILE
 sed -i -e "s%\"addressKeyName\": \"test\"%\"addressKeyName\": \"testkey\"%g" $CONFIG_FILE
 # Update the worker block
 sed -i '/"worker": \[/,/\]/c\
@@ -185,8 +182,14 @@ case "$response" in
     [yY][eE][sS]|[yY]) 
 #rem old config
 docker compose -f $HOME/basic-coin-prediction-node/docker-compose.yml down -v
-cd $HOME/basic-coin-prediction-node/
-rm config.json 
+docker container prune
+rm -rf  $HOME/basic-coin-prediction-node/
+#new config
+cd $HOME
+git clone https://github.com/allora-network/allora-huggingface-walkthrough
+cd allora-huggingface-walkthrough
+mkdir -p worker-data
+chmod -R 777 worker-data
 #Copy the example configuration file and populate it with your variables:
 cp config.example.json config.json
 #create new conf
@@ -198,8 +201,8 @@ echo "Wallet seed exported."
 # Update config.json with the provided seed and other parameters
 CONFIG_FILE="$HOME/basic-coin-prediction-node/config.json"
 sed -i -e "s%\"addressRestoreMnemonic\": \"\"%\"addressRestoreMnemonic\": \"${SEED}\"%g" $CONFIG_FILE
+sed -i -e "s%\"alloraHomeDir\": \"\"%\"alloraHomeDir\": \"/root/.allorad\"%g" $CONFIG_FILE
 sed -i -e "s%\"nodeRpc\": \"http://localhost:26657\"%\"nodeRpc\": \"https://allora-rpc.testnet-1.testnet.allora.network\"%g" $CONFIG_FILE
-sed -i -e "s%\"alloraHomeDir\": \"\"%\"alloraHomeDir\": \"data\"%g" $CONFIG_FILE
 sed -i -e "s%\"addressKeyName\": \"test\"%\"addressKeyName\": \"testkey\"%g" $CONFIG_FILE
 # Update the worker block
 sed -i '/"worker": \[/,/\]/c\
@@ -287,8 +290,6 @@ sed -i '/"worker": \[/,/\]/c\
         }\
     ]' $CONFIG_FILE
 #New app
-rm app.py 
-wget -O $HOME/basic-coin-prediction-node/app.py https://raw.githubusercontent.com/mgpwnz/Allora/main/app.py
 read -p "Enter api key: " key
 # Export seed as an environment variable
 export key="${key}"
@@ -297,7 +298,7 @@ sed -i -e "s%<Your Coingecko API key>%${key}%g" $HOME/basic-coin-prediction-node
 chmod +x init.config
 ./init.config
 cd $HOME
-docker compose -f $HOME/basic-coin-prediction-node/docker-compose.yml up -d
+docker compose -f $HOME/basic-coin-prediction-node/docker-compose.yml up --build -d
         ;;
     *)
 	echo Canceled
