@@ -5,7 +5,7 @@ do
 # Menu
 
 PS3='Select an action: '
-options=("Pre Install" "Install Wallet" "Install Worker" "Re-run Worker" "Install Huggingface" "Logs" "Uninstall Worker" "Uninstall Huggingface" "Exit")
+options=("Pre Install" "Install Wallet" "Install Worker" "Re-run Worker" "Install Huggingface" "Logs" "Uninstall Worker" "Uninstall Huggingface" "Uninstall Wallet" "Exit")
 select opt in "${options[@]}"
                do
                    case $opt in                          
@@ -296,7 +296,6 @@ rm -rf $HOME/allora-huggingface-walkthrough
         ;;
 esac
 break
-;;
 ;;
 "Uninstall Wallet")
 if [ ! -d "$HOME/wallet" ]; then
