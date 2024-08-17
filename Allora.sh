@@ -183,11 +183,10 @@ case "$response" in
 #rem old config
 docker compose -f $HOME/basic-coin-prediction-node/docker-compose.yml down -v
 docker container prune
-rm -rf  $HOME/basic-coin-prediction-node/
 #new config
 cd $HOME
 git clone https://github.com/allora-network/allora-huggingface-walkthrough
-cd allora-huggingface-walkthrough
+cd $HONE/allora-huggingface-walkthrough
 mkdir -p worker-data
 chmod -R 777 worker-data
 #Copy the example configuration file and populate it with your variables:
@@ -199,7 +198,7 @@ export SEED="${SEED}"
 echo "Wallet seed exported."
 
 # Update config.json with the provided seed and other parameters
-CONFIG_FILE="$HOME/basic-coin-prediction-node/config.json"
+CONFIG_FILE="$HOME/allora-huggingface-walkthrough/config.json"
 sed -i -e "s%\"addressRestoreMnemonic\": \"\"%\"addressRestoreMnemonic\": \"${SEED}\"%g" $CONFIG_FILE
 sed -i -e "s%\"alloraHomeDir\": \"\"%\"alloraHomeDir\": \"/root/.allorad\"%g" $CONFIG_FILE
 sed -i -e "s%\"nodeRpc\": \"http://localhost:26657\"%\"nodeRpc\": \"https://allora-rpc.testnet-1.testnet.allora.network\"%g" $CONFIG_FILE
@@ -293,12 +292,12 @@ sed -i '/"worker": \[/,/\]/c\
 read -p "Enter api key: " key
 # Export seed as an environment variable
 export key="${key}"
-sed -i -e "s%<Your Coingecko API key>%${key}%g" $HOME/basic-coin-prediction-node/app.py
+sed -i -e "s%<Your Coingecko API key>%${key}%g" $HOME/allora-huggingface-walkthrough/app.py
 #init
 chmod +x init.config
 ./init.config
 cd $HOME
-docker compose -f $HOME/basic-coin-prediction-node/docker-compose.yml up --build -d
+docker compose -f $HOME/allora-huggingface-walkthrough/docker-compose.yml up --build -d
         ;;
     *)
 	echo Canceled
