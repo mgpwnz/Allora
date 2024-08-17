@@ -5,7 +5,7 @@ do
 # Menu
 
 PS3='Select an action: '
-options=("Pre Install" "Install wallet" "Install worker" "Re-run node" "Logs" "Uninstall" "Exit")
+options=("Pre Install" "Install wallet" "Install worker" "Re-run node" "Logs" "ver2" "Uninstall" "Exit")
 #options=("Pre Install" "Install wallet" "Install worker" "Re-run node" "Logs" "Update" "Uninstall" "Exit")
 select opt in "${options[@]}"
                do
