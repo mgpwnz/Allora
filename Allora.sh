@@ -5,8 +5,7 @@ do
 # Menu
 
 PS3='Select an action: '
-options=("Pre Install" "Install wallet" "Install worker" "Re-run node" "Logs" "Version 2" "Uninstall" "Exit")
-#options=("Pre Install" "Install wallet" "Install worker" "Re-run node" "Logs" "Update" "Uninstall" "Exit")
+options=("Pre Install" "Install Wallet" "Install Worker" "Re-run Worker" "Install Huggingface" "Logs" "Uninstall Worker" "Uninstall Huggingface" "Exit")
 select opt in "${options[@]}"
                do
                    case $opt in                          
@@ -53,7 +52,7 @@ go version
 break
 ;;
 
-"Install wallet")
+"Install Wallet")
 # Clone repository
 git clone https://github.com/allora-network/allora-chain.git
 cd allora-chain && make all
@@ -62,7 +61,7 @@ sleep 1
 allorad keys add testkey --recover
 break
 ;;
-"Install worker")
+"Install Worker")
 if [  -d "$HOME/allora-huggingface-walkthrough" ]; then
 docker compose -f $HOME/allora-huggingface-walkthrough/docker-compose.yml down -v
 fi
@@ -124,7 +123,7 @@ sleep 2
 docker compose up -d
 break
 ;;
-"Re-run node")
+"Re-run Worker")
 docker compose -f $HOME/basic-coin-prediction-node/docker-compose.yml up -d
 break
 ;;
@@ -132,54 +131,7 @@ break
 docker logs -f worker
 break
 ;;
-"Update")
-docker compose -f $HOME/basic-coin-prediction-node/docker-compose.yml down -v
-CONFIG_FILE="$HOME/basic-coin-prediction-node/config.json"
-sed -i -e "s%\"addressKeyName\": \"test\"%\"addressKeyName\": \"testkey\"%g" $CONFIG_FILE
-# Update the worker block
-sed -i '/"worker": \[/,/\]/c\
-    "worker": [\
-        {\
-            "topicId": 1,\
-            "inferenceEntrypointName": "api-worker-reputer",\
-            "loopSeconds": 5,\
-            "parameters": {\
-                "InferenceEndpoint": "http://inference:8000/inference/{Token}",\
-                "Token": "ETH"\
-            }\
-        },\
-        {\
-            "topicId": 2,\
-            "inferenceEntrypointName": "api-worker-reputer",\
-            "loopSeconds": 5,\
-            "parameters": {\
-                "InferenceEndpoint": "http://inference:8000/inference/{Token}",\
-                "Token": "ETH"\
-            }\
-        },\
-        {\
-            "topicId": 7,\
-            "inferenceEntrypointName": "api-worker-reputer",\
-            "loopSeconds": 5,\
-            "parameters": {\
-                "InferenceEndpoint": "http://inference:8000/inference/{Token}",\
-                "Token": "ETH"\
-            }\
-        }\
-    ]' $CONFIG_FILE
-#change timeout
-TIMEOUT="$HOME/basic-coin-prediction-node/model.py"
-sed -i -e "s%intervals = \[\"1d\"\]%intervals = \[\"10m\", \"20m\", \"1h\", \"1d\"\]%g" $TIMEOUT
-cd $HOME/basic-coin-prediction-node/
-chmod +x init.config
-./init.config
-cd $HOME
-docker compose -f $HOME/basic-coin-prediction-node/docker-compose.yml up -d
-sleep 1
-docker logs -f worker
-break
-;;
-"Version 2")
+"Install Huggingface")
 read -r -p "Install ver 2? [y/N] " response
 case "$response" in
     [yY][eE][sS]|[yY]) 
@@ -311,15 +263,15 @@ cd $HOME
 esac
 break
 ;;
-"Uninstall")
+"Uninstall Worker")
 if [ ! -d "$HOME/basic-coin-prediction-node" ]; then
     break
 fi
-read -r -p "Wipe all DATA? [y/N] " response
+read -r -p "Uninstall Worker? [y/N] " response
 case "$response" in
     [yY][eE][sS]|[yY]) 
 cd $HOME/basic-coin-prediction-node && docker compose down -v
-rm -rf $HOME/basic-coin-prediction-node $HOME/allora-chain
+rm -rf $HOME/basic-coin-prediction-node
         ;;
     *)
 	echo Canceled
@@ -328,7 +280,40 @@ rm -rf $HOME/basic-coin-prediction-node $HOME/allora-chain
 esac
 break
 ;;
-
+"Uninstall Huggingface")
+if [ ! -d "$HOME/allora-huggingface-walkthrough" ]; then
+    break
+fi
+read -r -p "Uninstall Huggingface? [y/N] " response
+case "$response" in
+    [yY][eE][sS]|[yY]) 
+cd $HOME/allora-huggingface-walkthrough && docker compose down -v
+rm -rf $HOME/allora-huggingface-walkthrough
+        ;;
+    *)
+	echo Canceled
+	break
+        ;;
+esac
+break
+;;
+;;
+"Uninstall Wallet")
+if [ ! -d "$HOME/wallet" ]; then
+    break
+fi
+read -r -p "Remove Wallet? [y/N] " response
+case "$response" in
+    [yY][eE][sS]|[yY]) 
+rm -rf $HOME/allora-chain $HOME/.allorad
+        ;;
+    *)
+	echo Canceled
+	break
+        ;;
+esac
+break
+;;
 "Exit")
 exit
 ;;
