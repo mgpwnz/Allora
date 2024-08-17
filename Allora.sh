@@ -179,6 +179,132 @@ sleep 1
 docker logs -f worker
 break
 ;;
+"ver2")
+read -r -p "Remove ver.1? [y/N] " response
+case "$response" in
+    [yY][eE][sS]|[yY]) 
+#rem old config
+docker compose -f $HOME/basic-coin-prediction-node/docker-compose.yml down -v
+cd $HOME/basic-coin-prediction-node/
+rm config.json 
+#Copy the example configuration file and populate it with your variables:
+cp config.example.json config.json
+#create new conf
+read -p "Enter wallet seed: " SEED
+# Export seed as an environment variable
+export SEED="${SEED}"
+echo "Wallet seed exported."
+
+# Update config.json with the provided seed and other parameters
+CONFIG_FILE="$HOME/basic-coin-prediction-node/config.json"
+sed -i -e "s%\"addressRestoreMnemonic\": \"\"%\"addressRestoreMnemonic\": \"${SEED}\"%g" $CONFIG_FILE
+sed -i -e "s%\"nodeRpc\": \"http://localhost:26657\"%\"nodeRpc\": \"https://allora-rpc.testnet-1.testnet.allora.network\"%g" $CONFIG_FILE
+sed -i -e "s%\"alloraHomeDir\": \"\"%\"alloraHomeDir\": \"data\"%g" $CONFIG_FILE
+sed -i -e "s%\"addressKeyName\": \"test\"%\"addressKeyName\": \"testkey\"%g" $CONFIG_FILE
+# Update the worker block
+sed -i '/"worker": \[/,/\]/c\
+    "worker": [\
+        {\
+            "topicId": 1,\
+            "inferenceEntrypointName": "api-worker-reputer",\
+            "loopSeconds": 1,\
+            "parameters": {\
+                "InferenceEndpoint": "http://inference:8000/inference/{Token}",\
+                "Token": "ETH"\
+            }\
+        },\
+        {\
+            "topicId": 2,\
+            "inferenceEntrypointName": "api-worker-reputer",\
+            "loopSeconds": 3,\
+            "parameters": {\
+                "InferenceEndpoint": "http://inference:8000/inference/{Token}",\
+                "Token": "ETH"\
+            }\
+        },\
+        {\
+            "topicId": 3,\
+            "inferenceEntrypointName": "api-worker-reputer",\
+            "loopSeconds": 5,\
+            "parameters": {\
+                "InferenceEndpoint": "http://inference:8000/inference/{Token}",\
+                "Token": "BTC"\
+            }\
+        },\
+        {\
+            "topicId": 4,\
+            "inferenceEntrypointName": "api-worker-reputer",\
+            "loopSeconds": 2,\
+            "parameters": {\
+                "InferenceEndpoint": "http://inference:8000/inference/{Token}",\
+                "Token": "BTC"\
+            }\
+        },\
+        {\
+            "topicId": 5,\
+            "inferenceEntrypointName": "api-worker-reputer",\
+            "loopSeconds": 4,\
+            "parameters": {\
+                "InferenceEndpoint": "http://inference:8000/inference/{Token}",\
+                "Token": "SOL"\
+            }\
+        },\
+        {\
+            "topicId": 6,\
+            "inferenceEntrypointName": "api-worker-reputer",\
+            "loopSeconds": 5,\
+            "parameters": {\
+                "InferenceEndpoint": "http://inference:8000/inference/{Token}",\
+                "Token": "SOL"\
+            }\
+        },\
+        {\
+            "topicId": 7,\
+            "inferenceEntrypointName": "api-worker-reputer",\
+            "loopSeconds": 2,\
+            "parameters": {\
+                "InferenceEndpoint": "http://inference:8000/inference/{Token}",\
+                "Token": "ETH"\
+            }\
+        },\
+        {\
+            "topicId": 8,\
+            "inferenceEntrypointName": "api-worker-reputer",\
+            "loopSeconds": 3,\
+            "parameters": {\
+                "InferenceEndpoint": "http://inference:8000/inference/{Token}",\
+                "Token": "BNB"\
+            }\
+        },\
+        {\
+            "topicId": 9,\
+            "inferenceEntrypointName": "api-worker-reputer",\
+            "loopSeconds": 5,\
+            "parameters": {\
+                "InferenceEndpoint": "http://inference:8000/inference/{Token}",\
+                "Token": "ARB"\
+            }\
+        }\
+    ]' $CONFIG_FILE
+#New app
+rm app.py 
+wget -O $HOME/basic-coin-prediction-node/app.py https://raw.githubusercontent.com/mgpwnz/Allora/main/app.py
+read -p "Enter api key: " key
+export COINGECKO_API_KEY="${key}"
+python3 app.py
+#init
+chmod +x init.config
+./init.config
+cd $HOME
+docker compose -f $HOME/basic-coin-prediction-node/docker-compose.yml up -d
+        ;;
+    *)
+	echo Canceled
+	break
+        ;;
+esac
+break
+;;
 "Uninstall")
 if [ ! -d "$HOME/basic-coin-prediction-node" ]; then
     break
