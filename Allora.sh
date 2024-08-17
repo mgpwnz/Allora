@@ -191,7 +191,7 @@ fi
 #new config
 cd $HOME
 git clone https://github.com/allora-network/allora-huggingface-walkthrough
-cd $HONE/allora-huggingface-walkthrough
+cd $HOME/allora-huggingface-walkthrough
 mkdir -p worker-data
 chmod -R 777 worker-data
 #Copy the example configuration file and populate it with your variables:
