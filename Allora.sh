@@ -290,8 +290,9 @@ sed -i '/"worker": \[/,/\]/c\
 rm app.py 
 wget -O $HOME/basic-coin-prediction-node/app.py https://raw.githubusercontent.com/mgpwnz/Allora/main/app.py
 read -p "Enter api key: " key
-export COINGECKO_API_KEY="${key}"
-python3 app.py
+# Export seed as an environment variable
+export key="${key}"
+sed -i -e "s%<Your Coingecko API key>%${key}%g" $HOME/basic-coin-prediction-node/app.py
 #init
 chmod +x init.config
 ./init.config
