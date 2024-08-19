@@ -264,7 +264,7 @@ esac
 break
 ;;
 "Re-run Huggingface")
-docker compose -f $HOME/basic-coin-prediction-node/docker-compose.yml up -d
+docker compose -f $HOME/allora-huggingface-walkthrough/docker-compose.yml up -d
 break
 ;;
 "Uninstall Worker")
