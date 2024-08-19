@@ -5,7 +5,7 @@ do
 # Menu
 
 PS3='Select an action: '
-options=("Pre Install" "Install Wallet" "Install Worker" "Re-run Worker" "Install Huggingface" "Logs" "Uninstall Worker" "Uninstall Huggingface" "Uninstall Wallet" "Exit")
+options=("Pre Install" "Install Wallet" "Install Worker" "Re-run Worker" "Install Huggingface" "Re-run Huggingface" "Logs" "Uninstall Worker" "Uninstall Huggingface" "Uninstall Wallet" "Exit")
 select opt in "${options[@]}"
                do
                    case $opt in                          
@@ -261,6 +261,10 @@ cd $HOME
 	break
         ;;
 esac
+break
+;;
+"Re-run Huggingface")
+docker compose -f $HOME/basic-coin-prediction-node/docker-compose.yml up -d
 break
 ;;
 "Uninstall Worker")
