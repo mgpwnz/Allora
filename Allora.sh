@@ -63,7 +63,7 @@ break
 ;;
 "Install Worker")
 if [  -d "$HOME/allora-huggingface-walkthrough" ]; then
-docker compose -f $HOME/allora-huggingface-walkthrough/docker-compose.yml down -v
+docker compose -f $HOME/allora-huggingface-walkthrough/docker-compose.yaml down -v
 fi
 cd $HOME && git clone https://github.com/allora-network/basic-coin-prediction-node
 cd basic-coin-prediction-node
@@ -264,7 +264,7 @@ esac
 break
 ;;
 "Re-run Huggingface")
-docker compose -f $HOME/allora-huggingface-walkthrough/docker-compose.yml up -d
+docker compose -f $HOME/allora-huggingface-walkthrough/docker-compose.yaml up -d
 break
 ;;
 "Uninstall Worker")
