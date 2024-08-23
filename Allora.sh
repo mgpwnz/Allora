@@ -5,7 +5,8 @@ do
 # Menu
 
 PS3='Select an action: '
-options=("Pre Install" "Install Wallet" "Install Worker" "Re-run Worker" "Install Huggingface" "Re-run Huggingface" "Logs" "Uninstall Worker" "Uninstall Huggingface" "Uninstall Wallet" "Exit")
+options=("Pre Install" "Install Wallet" "Install Worker" "Re-run Worker" "Logs" "Uninstall Worker" "Uninstall Wallet" "Exit")
+#options=("Pre Install" "Install Wallet" "Install Worker" "Re-run Worker" "Install Huggingface" "Re-run Huggingface" "Logs" "Uninstall Worker" "Uninstall Huggingface" "Uninstall Wallet" "Exit")
 select opt in "${options[@]}"
                do
                    case $opt in                          
