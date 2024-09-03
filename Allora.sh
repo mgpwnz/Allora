@@ -5,7 +5,7 @@ do
 # Menu
 
 PS3='Select an action: '
-options=("Pre Install" "Install Wallet" "Install Worker" "Re-run Worker" "Logs" "Uninstall Worker" "Uninstall Wallet" "Exit")
+options=("Pre Install" "Install Wallet" "Install Worker" "Re-run Worker" "Update RPC" "Logs" "Uninstall Worker" "Uninstall Wallet" "Exit")
 #options=("Pre Install" "Install Wallet" "Install Worker" "Re-run Worker" "Install Huggingface" "Re-run Huggingface" "Logs" "Uninstall Worker" "Uninstall Huggingface" "Uninstall Wallet" "Exit")
 select opt in "${options[@]}"
                do
@@ -80,7 +80,7 @@ echo "Wallet seed exported."
 # Update config.json with the provided seed and other parameters
 CONFIG_FILE="$HOME/basic-coin-prediction-node/config.json"
 sed -i -e "s%\"addressRestoreMnemonic\": \"\"%\"addressRestoreMnemonic\": \"${SEED}\"%g" $CONFIG_FILE
-sed -i -e "s%\"nodeRpc\": \"http://localhost:26657\"%\"nodeRpc\": \"https://allora-rpc.testnet-1.testnet.allora.network\"%g" $CONFIG_FILE
+sed -i -e "s%\"nodeRpc\": \"http://localhost:26657\"%\"nodeRpc\": \"https://allora-rpc.testnet.allora.network/\"%g" $CONFIG_FILE
 sed -i -e "s%\"alloraHomeDir\": \"\"%\"alloraHomeDir\": \"/root/.allorad\"%g" $CONFIG_FILE
 sed -i -e "s%\"addressKeyName\": \"test\"%\"addressKeyName\": \"testkey\"%g" $CONFIG_FILE
 # Update the worker block
@@ -126,6 +126,18 @@ break
 ;;
 "Re-run Worker")
 docker compose -f $HOME/basic-coin-prediction-node/docker-compose.yml up -d
+break
+;;
+"Update RPC")
+cd basic-coin-prediction-node
+docker compose down -v
+CONFIG_FILE="$HOME/basic-coin-prediction-node/config.json"
+sed -i -e "s%\"nodeRpc\": \"https://allora-rpc.testnet-1.testnet.allora.network\"%\"nodeRpc\": \"https://allora-rpc.testnet.allora.network/\"%g" $CONFIG_FILE
+chmod +x init.config
+./init.config
+sleep 2
+docker compose up -d
+cd $HOME
 break
 ;;
 "Logs")
