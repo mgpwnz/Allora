@@ -5,7 +5,7 @@ do
 # Menu
 
 PS3='Select an action: '
-options=("Pre Install" "Install Wallet" "Install Worker CoinGecko" ""Re-run Worker"" "Logs" "Uninstall Worker" "Uninstall Wallet" "Exit")
+options=("Pre Install" "Install Wallet" "Install Worker CoinGecko" "Re-run Worker" "Switch to binance" "Switch to coingecko" "Logs" "Uninstall Worker" "Uninstall Wallet" "Exit")
 #options=("Pre Install" "Install Wallet" "Install Worker" "Re-run Worker" "Install Huggingface" "Re-run Huggingface" "Logs" "Uninstall Worker" "Uninstall Huggingface" "Uninstall Wallet" "Exit")
 select opt in "${options[@]}"
                do
@@ -121,7 +121,7 @@ sed -i '/"worker": \[/,/\]/c\
 #create env
 tee $HOME/basic-coin-prediction-node/.env > /dev/null <<EOF
 TOKEN=ETH
-TRAINING_DAYS=180
+TRAINING_DAYS=30
 TIMEFRAME=4h
 MODEL=BayesianRidge
 REGION=EU
@@ -133,6 +133,47 @@ chmod +x init.config
 ./init.config
 sleep 2
 docker compose up --build -d
+break
+;;
+
+"Switch to binance")
+if [ ! -d "$HOME/basic-coin-prediction-node" ]; then
+    exit
+else
+docker compose -f $HOME/basic-coin-prediction-node/docker-compose.yml down -v
+cd $HOME/basic-coin-prediction-node/ || exit  
+mv .env gecko
+tee $HOME/basic-coin-prediction-node/.env > /dev/null <<EOF
+TOKEN=ETH
+TRAINING_DAYS=30
+TIMEFRAME=4h
+MODEL=SRV
+REGION=EU
+DATA_PROVIDER=binance
+CG_API_KEY=
+EOF
+docker compose up --build -d
+cd $HOME
+fi
+break
+;;
+"Switch to coingecko")
+if [ ! -d "$HOME/basic-coin-prediction-node" ]; then
+    echo -e "\e[31mDirectory $HOME/basic-coin-prediction-node does not exist. Exiting...\e[0m"
+    exit
+else
+    cd $HOME/basic-coin-prediction-node/ || exit  
+    docker compose -f $HOME/basic-coin-prediction-node/docker-compose.yml down -v
+    
+    if [ ! -f "gecko" ]; then  
+        echo -e "\e[31mFile 'gecko' does not exist. Exiting...\e[0m"
+        exit
+    fi
+    
+    mv .env binance  
+    cp gecko .env    
+    docker compose up --build -d  
+    cd $HOME  
 break
 ;;
 "Re-run Worker")
