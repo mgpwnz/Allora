@@ -173,6 +173,7 @@ else
     cp gecko .env    
     docker compose up --build -d  
     cd $HOME  
+    fi
 break
 ;;
 "Re-run Worker")
