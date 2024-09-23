@@ -135,7 +135,6 @@ sleep 2
 docker compose up --build -d
 break
 ;;
-
 "Switch to binance")
 if [ ! -d "$HOME/basic-coin-prediction-node" ]; then
     exit
