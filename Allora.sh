@@ -5,7 +5,7 @@ do
 # Menu
 
 PS3='Select an action: '
-options=("Pre Install" "Install Wallet" "Install Worker" "Re-run Worker" "Update RPC" "Logs" "Uninstall Worker" "Uninstall Wallet" "Exit")
+options=("Pre Install" "Install Wallet" "Install Worker" "Logs" "Uninstall Worker" "Uninstall Wallet" "Exit")
 #options=("Pre Install" "Install Wallet" "Install Worker" "Re-run Worker" "Install Huggingface" "Re-run Huggingface" "Logs" "Uninstall Worker" "Uninstall Huggingface" "Uninstall Wallet" "Exit")
 select opt in "${options[@]}"
                do
@@ -72,11 +72,12 @@ cd basic-coin-prediction-node
 cp config.example.json config.json
 #create new conf
 read -p "Enter wallet seed: " SEED
-
+read -p "Enter API coingecko: " API
 # Export seed as an environment variable
 export SEED="${SEED}"
 echo "Wallet seed exported."
-
+export API="${API}"
+echo "API exported."
 # Update config.json with the provided seed and other parameters
 CONFIG_FILE="$HOME/basic-coin-prediction-node/config.json"
 sed -i -e "s%\"addressRestoreMnemonic\": \"\"%\"addressRestoreMnemonic\": \"${SEED}\"%g" $CONFIG_FILE
@@ -115,8 +116,18 @@ sed -i '/"worker": \[/,/\]/c\
         }\
     ]' $CONFIG_FILE
 #change timeout
-TIMEOUT="$HOME/basic-coin-prediction-node/model.py"
-sed -i -e "s%intervals = \[\"1d\"\]%intervals = \[\"10m\", \"20m\", \"1h\", \"1d\"\]%g" $TIMEOUT
+#TIMEOUT="$HOME/basic-coin-prediction-node/model.py"
+#sed -i -e "s%intervals = \[\"1d\"\]%intervals = \[\"10m\", \"20m\", \"1h\", \"1d\"\]%g" $TIMEOUT
+#create env
+tee $HOME/basic-coin-prediction-node/.env > /dev/null <<EOF
+TOKEN=ETH
+TRAINING_DAYS=180
+TIMEFRAME=4h
+MODEL=BayesianRidge
+REGION=EU
+DATA_PROVIDER=coingecko
+CG_API_KEY=$API
+EOF
 
 chmod +x init.config
 ./init.config
