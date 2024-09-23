@@ -5,7 +5,7 @@ do
 # Menu
 
 PS3='Select an action: '
-options=("Pre Install" "Install Wallet" "Install Worker" ""Re-run Worker"" "Logs" "Uninstall Worker" "Uninstall Wallet" "Exit")
+options=("Pre Install" "Install Wallet" "Install Worker CoinGecko" ""Re-run Worker"" "Logs" "Uninstall Worker" "Uninstall Wallet" "Exit")
 #options=("Pre Install" "Install Wallet" "Install Worker" "Re-run Worker" "Install Huggingface" "Re-run Huggingface" "Logs" "Uninstall Worker" "Uninstall Huggingface" "Uninstall Wallet" "Exit")
 select opt in "${options[@]}"
                do
@@ -62,7 +62,7 @@ sleep 1
 allorad keys add testkey --recover
 break
 ;;
-"Install Worker")
+"Install Worker CoinGecko")
 if [  -d "$HOME/allora-huggingface-walkthrough" ]; then
 docker compose -f $HOME/allora-huggingface-walkthrough/docker-compose.yaml down -v
 fi
