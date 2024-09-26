@@ -90,7 +90,7 @@ sed -i '/"worker": \[/,/\]/c\
         {\
             "topicId": 1,\
             "inferenceEntrypointName": "api-worker-reputer",\
-            "loopSeconds": 5,\
+            "loopSeconds": 2,\
             "parameters": {\
                 "InferenceEndpoint": "http://inference:8000/inference/{Token}",\
                 "Token": "ETH"\
@@ -99,7 +99,7 @@ sed -i '/"worker": \[/,/\]/c\
         {\
             "topicId": 2,\
             "inferenceEntrypointName": "api-worker-reputer",\
-            "loopSeconds": 5,\
+            "loopSeconds": 4,\
             "parameters": {\
                 "InferenceEndpoint": "http://inference:8000/inference/{Token}",\
                 "Token": "ETH"\
@@ -108,7 +108,7 @@ sed -i '/"worker": \[/,/\]/c\
         {\
             "topicId": 7,\
             "inferenceEntrypointName": "api-worker-reputer",\
-            "loopSeconds": 5,\
+            "loopSeconds": 6,\
             "parameters": {\
                 "InferenceEndpoint": "http://inference:8000/inference/{Token}",\
                 "Token": "ETH"\
